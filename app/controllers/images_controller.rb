@@ -8,7 +8,14 @@ class ImagesController < ApplicationController
   end
 
   def download
-    head :ok
+    image = Image.find(params[:id])
+    processed_image = image.processed_image
+
+    head 404 unless processed_image # todo
+
+    send_file("#{Rails.public_path}#{image.processed_image_url}",
+      type: processed_image.metadata['mime_type'],
+      disposition: 'attachment')
   end
 
   private
