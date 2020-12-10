@@ -5,11 +5,17 @@ class CompressImageJob < ApplicationJob
 
   def perform(image_uuid)
     Rails.logger.info("Start processing image=#{image_uuid}")
-    
+
     image = Image.find(image_uuid)
     compress_image!(image)
+
+    Rails.logger.info("Compression complete image=#{image_uuid}. Sending notification")
+    ImageMailer.success_email(image).deliver_later
+
   rescue StandardError => error
-    Rails.logger.error("Error during image processing image=#{image_uuid}: #{error}")
+    Rails.logger.error("Error during image processing image=#{image_uuid}: #{error}. Sending notification")
+    ImageMailer.fail_email(image).deliver_later
+
     raise error
   end
 
