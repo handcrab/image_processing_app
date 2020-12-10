@@ -13,7 +13,12 @@ Docker, docker-compose
 
 ## Запуск
 ```
+# for the first time
+cp .env.sample .env
 docker-compose up --build
+
+# otherwise
+docker-compose up
 ```
 
 ## Запуск тестов
