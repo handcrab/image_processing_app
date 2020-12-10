@@ -2,29 +2,51 @@ require 'image_processing/mini_magick'
 
 class CompressImageJob < ApplicationJob
   queue_as :default
+  delegate :logger, to: Rails
 
   def perform(image_uuid)
-    Rails.logger.info("Start processing image=#{image_uuid}")
+    logger.info("Started processing image=#{image_uuid}")
 
-    image = Image.find(image_uuid)
-    compress_image!(image)
+    image = find_image(image_uuid)
 
-    Rails.logger.info("Compression complete image=#{image_uuid}. Sending notification")
-    ImageMailer.success_email(image).deliver_later
-  rescue StandardError => e
-    Rails.logger.error("Error during image processing image=#{image_uuid}: #{e}. Sending notification")
-    ImageMailer.fail_email(image).deliver_later
+    compress_image(image)
+    notify_owner(image, :success)
+  rescue StandardError => error
+    logger.error("#{image}: error during image processing: #{error}")
+    notify_owner(image, :error)
 
-    raise e
+    raise error
   end
 
   private
 
-  def compress_image!(image)
+  def find_image(id)
+    Image.find(id)
+  end
+
+  def compress_image(image)
     image.image.open do |file|
       processed_image = ImageProcessing::MiniMagick.source(file)
       processed_image.magick.resize_to_limit(50, 50)
       image.processed_image = processed_image.call
     end
+
+    image.process!
+
+    logger.info("#{image}: compression completed")
+  end
+
+  def notify_owner(image, state)
+    message =
+      case state
+      when :success
+        ImageMailer.success_email(image)
+      when :error
+        ImageMailer.fail_email(image)
+      end
+
+    message.deliver_later
+
+    logger.info("#{image}: notification sent")
   end
 end

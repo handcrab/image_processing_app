@@ -32,8 +32,11 @@ gem 'sidekiq', '~> 5.1', require: 'sidekiq/web'
 
 gem 'validates_email_format_of'
 
-gem "shrine", "~> 3.0"
-gem "image_processing", "~> 1.8"
+gem 'image_processing', '~> 1.8'
+
+gem 'shrine', '~> 3.0'
+
+gem 'state_machine', require: 'state_machine'
 
 # Use Bootsnap to improve startup times
 # gem 'bootsnap', '>= 1.1.0', require: false
@@ -49,6 +52,7 @@ group :test do
   # gem 'selenium-webdriver'
   # Easy installation and use of chromedriver to run system tests with Chrome
   # gem 'chromedriver-helper'
+  gem 'factory_bot_rails'
 end
 
 group :development do

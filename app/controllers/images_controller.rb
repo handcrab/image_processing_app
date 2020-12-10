@@ -1,28 +1,20 @@
 class ImagesController < ApplicationController
   def compress
-    image = Image.create!(callback_email: compress_params[:email], image: compress_params[:file_image])
+    compress_params = params.permit(:email, :file_image)
+    image = Images::CompressImage.new.call(compress_params)
 
-    CompressImageJob.perform_later(image.id)
-
-    head :ok
+    render json: { id: image.id }
   end
 
   def download
-    image = Image.find(params[:id])
-    processed_image = image.processed_image
+    download_params = params.permit(:id)
+    image = Images::FindProcessedImage.new.call(download_params)
 
-    if processed_image
-      send_file("#{Rails.public_path}#{image.processed_image_url}",
-                type: processed_image.metadata['mime_type'],
-                disposition: 'attachment')
-    else
-      head 422
-    end
-  end
-
-  private
-
-  def compress_params
-    params.permit(:email, :file_image)
+    # TODO X-Accel-Redirect is preferred in real app
+    send_file(
+      "#{Rails.public_path}#{image.processed_image_url}",
+      type: image.processed_image.metadata['mime_type'],
+      disposition: 'attachment'
+    )
   end
 end
