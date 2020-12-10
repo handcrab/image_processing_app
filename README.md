@@ -1,5 +1,12 @@
 # README
 
+## Запуск
+
+## Отправка файла 
+```
+curl -i -X POST -H "Content-Type: multipart/form-data" -F "file_image=@test/fixtures/files/test_img.jpg" -F "email=foo@bar.baz" localhost:3000/images/compress
+```
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
