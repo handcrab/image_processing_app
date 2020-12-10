@@ -30,32 +30,7 @@ gem 'sidekiq', '~> 5.1', require: 'sidekiq/web'
 # Use Clockwork for recurring background tasks without needing cron
 # gem 'clockwork', '~> 2.0'
 
-# Use Kaminari for pagination
-# gem 'kaminari', '~> 1.0'
-
-# Use SCSS for stylesheets
-# gem 'sass-rails', '~> 5.0'
-
-# Use Uglifier as the compressor for JavaScript assets
-# gem 'uglifier', '>= 1.3.0'
-
-# Use jQuery as the JavaScript library
-# gem 'jquery-rails', '~> 4.3'
-
-# Use Turbolinks. Read more: https://github.com/turbolinks/turbolinks
-# gem 'turbolinks', '~> 5'
-
-# Use Bootstrap SASS for Bootstrap support
-# gem 'bootstrap-sass', '~> 3.3'
-
-# Use Font Awesome Rails for Font Awesome icons
-# gem 'font-awesome-rails', '~> 4.7'
-
-# gem "shrine", "~> 3.0"
-# gem "image_processing", "~> 1.8"
-
-# gem 'validates_email_format_of'
-
+gem 'validates_email_format_of'
 
 # Use Bootsnap to improve startup times
 # gem 'bootsnap', '>= 1.1.0', require: false
