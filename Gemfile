@@ -33,6 +33,7 @@ gem 'sidekiq', '~> 5.1', require: 'sidekiq/web'
 gem 'validates_email_format_of'
 
 gem "shrine", "~> 3.0"
+gem "image_processing", "~> 1.8"
 
 # Use Bootsnap to improve startup times
 # gem 'bootsnap', '>= 1.1.0', require: false
