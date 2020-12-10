@@ -11,11 +11,11 @@ class ImagesController < ApplicationController
     image = Image.find(params[:id])
     processed_image = image.processed_image
 
-    head 404 unless processed_image # todo
+    head 422 unless processed_image
 
     send_file("#{Rails.public_path}#{image.processed_image_url}",
-      type: processed_image.metadata['mime_type'],
-      disposition: 'attachment')
+              type: processed_image.metadata['mime_type'],
+              disposition: 'attachment')
   end
 
   private
