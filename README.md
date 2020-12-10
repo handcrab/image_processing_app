@@ -1,31 +1,56 @@
 # README
+Сервис для демонстрации решения асинхронной обработки изображений.
+
+* Пользователь отправляет свой email и изображение при помощи предоставленного API
+* Пользовательский файл и email проверяются на корректность (разрешены только изображения)
+* Создается запись в БД, фиксирующая факт загрузки и связь с файлом
+* Файл сохраняется на сервере, запускается фоновая задача на его обработку изображения (в данной реализации уменьшение по ширине/высоте)
+* Обработанный файл так же сохраняется на сервере
+* Пользователю на указанный email отправляется сообщение об успешной обработке файла и ссылка на скачивание
+
+## Требования
+Docker, docker-compose
 
 ## Запуск
+```
+docker-compose up --build
+```
 
-## Отправка файла 
+## API
+### Загрузка изображения на сервер
+`POST multipart/form-data​ ​ http://localhost:port/images/compress`
+
+#### Параметры:
+* email, string, обязательный - валидный email пользователя
+* image_file, multipart/form-data, обязательный - файл с изображением
+
+### Возможные ответы
++ Response 200 - Файл сохранен
++ Response 422 - Ошибки валидации
+
+### Получение сжатого изображения с сервера
+`GET ​ http://localhost​ :port/images/:uuid/download`
+
+#### Параметры:
+* uuid, string, обязательный - uuid по которому пользователя может получить сжатое изображение.
+
+### Возможные ответы
++ Response 200 - Файл готов и будет отправлен в ответе
++ Response 200 - Файл готов и будет отправлен в ответе
++ Response 404 - Запрашиваемый файл не найден, либо еще не обработан (!)
+
+## Пример отправки файла
 ```
 curl -i -X POST -H "Content-Type: multipart/form-data" -F "file_image=@test/fixtures/files/test_img.jpg" -F "email=foo@bar.baz" localhost:3000/images/compress
 ```
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Пример получения файла
+```
+curl -i localhost:3000/images/fbd7a219-7f67-4c56-aad8-04a928092290/download
+```
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## TODO
+- Покрыть тестами
+- Унифицировать ответы (ошибки - json)
+- Для отслеживания состояния обработки изображений можно добавить поле состояний, стейт-машину
+- Углубленное изучение shrine api. Есть поддержка фоновой обработки файлов по хукам
