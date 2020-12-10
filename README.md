@@ -16,6 +16,11 @@ Docker, docker-compose
 docker-compose up --build
 ```
 
+## Запуск тестов
+```
+docker-compose exec --user "$(id -u):$(id -g)" website rspec
+```
+
 ## API
 ### Загрузка изображения на сервер
 `POST multipart/form-data​ ​ http://localhost:port/images/compress`
